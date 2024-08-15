@@ -1,0 +1,45 @@
+const nodemailer = require("nodemailer");
+const uniqid = require("uniqid");
+const User = require("../models/userModels");
+
+const sendMail = async ({ email, emailType, userId }) => {
+    try {
+        const transport = nodemailer.createTransport({
+            host: process.env.SMTP_HOST || "sandbox.smtp.mailtrap.io",
+            port: process.env.SMTP_PORT || 2525,
+            auth: {
+                user: process.env.SMTP_USER || "your_mailtrap_user",
+                pass: process.env.SMTP_PASS || "your_mailtrap_pass",
+            },
+        });
+
+        const hashedToken = uniqid();
+
+        const updateFields =
+            emailType === "VERIFY"
+                ? { verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000 }
+                : { forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: Date.now() + 3600000 };
+
+        await User.findByIdAndUpdate(userId, updateFields);
+
+        const mailOption = {
+            from: process.env.EMAIL_FROM || 'no-reply@yourdomain.com',
+            to: email,
+            subject: emailType === 'VERIFY' ? 'Verify your email' : 'Reset your password',
+            html: `
+                <p>Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">
+                here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}.</p>
+                <p>If the link doesn't work, copy and paste this URL into your browser: 
+                ${process.env.DOMAIN}/verifyemail?token=${hashedToken}</p>
+            `,
+        };
+
+        const info = await transport.sendMail(mailOption);
+        console.log("Email sent: ", info);
+
+    } catch (error) {
+        console.error("Error in sending mail", error);
+    }
+};
+
+module.exports = { sendMail };
