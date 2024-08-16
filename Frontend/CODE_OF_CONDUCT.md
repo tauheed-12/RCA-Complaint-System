@@ -22,7 +22,7 @@ npm start
 
 - `components/`: Contains reusable UI components.
 
-- `services/`: API interaction logic. All API calls should be in this folder.
+- `apis/`: API interaction logic. All API calls should be in this folder.
 
 &nbsp;&nbsp;&nbsp;&nbsp; Example: `apiStudent.js` - API calls related to student details.
 
