@@ -4,6 +4,8 @@ const multer = require('multer');
 const cors = require('cors');
 const connect = require('./config/dbConfig');
 const authRoutes = require('./routers/authRoutes');
+const studentRoutes = require('./routers/studentRoutes');
+const caretakerRoutes = require('./routers/caretakerRoutes');
 
 const app = express();
 
@@ -13,6 +15,9 @@ app.use(express.json());
 connect();
 
 app.use('/auth', authRoutes);
+app.use('/student', studentRoutes);
+app.use('/caretaker', caretakerRoutes)
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

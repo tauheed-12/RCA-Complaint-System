@@ -13,6 +13,9 @@ exports.userRegister = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+        let role = "";
+
+        isCareTaker ? role = "Caretaker" : isAdmin ? role = "Admin" : role = "Student"
 
         const newUser = new User({
             name,
@@ -22,6 +25,7 @@ exports.userRegister = async (req, res) => {
             password: hashedPassword,
             isCareTaker,
             isAdmin,
+            role: role
         });
 
         const savedUser = await newUser.save();
@@ -55,7 +59,7 @@ exports.userLogin = async (req, res) => {
             return res.status(400).json({ message: "Invalid password" });
         }
 
-        const token = jwt.sign({ email: user.email }, process.env.TOKEN_SECRET, { expiresIn: "30m" });
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: "30m" });
         console.log(token);
 
         return res.status(200).json({
