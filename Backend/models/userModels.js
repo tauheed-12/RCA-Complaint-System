@@ -18,11 +18,6 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
-    roomNumber: {
-        type: String,
-        required: false
-    },
-
     password: {
         type: String,
         required: true

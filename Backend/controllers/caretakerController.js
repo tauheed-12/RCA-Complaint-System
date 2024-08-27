@@ -3,7 +3,7 @@ const Complaint = require('../models/complaintModel');
 
 exports.getComplaints = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = req.params.id;
         const user = await User.findById(userId);
 
         if (!user) {

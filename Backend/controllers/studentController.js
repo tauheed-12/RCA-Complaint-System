@@ -23,7 +23,7 @@ exports.addComplaint = async (req, res) => {
 
 exports.deleteComplaint = async (req, res) => {
     try {
-        const { complaintId } = req.body;
+        const { complaintId } = req.params.id;
 
         await Complaint.findByIdAndDelete(complaintId);
 
@@ -35,7 +35,7 @@ exports.deleteComplaint = async (req, res) => {
 
 exports.allComplaints = async (req, res) => {
     try {
-        const { studentId } = req.body;
+        const { studentId } = req.params.id;
 
         const allComplaints = await Complaint.find({ student: studentId });
         console.log(allComplaints);

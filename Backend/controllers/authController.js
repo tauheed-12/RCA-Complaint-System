@@ -106,3 +106,43 @@ exports.verifyEmail = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.find({ email: email });
+
+        if (!user) {
+            return res.status(400).json({ error: "Invalid email details" });
+        }
+        await sendMail(email, "ForgotPassword", user._id);
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+exports.verifyPasswordToken = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+        console.log(token);
+
+        const user = await User.findOne({
+            forgotPasswordToken: token,
+            forgotPasswordTokenExpiry: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: "Invalid token details" });
+        }
+
+        const hashedPassword = bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+        user.save();
+        return res.status(200).json({ message: "Successfully reset!!" });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
