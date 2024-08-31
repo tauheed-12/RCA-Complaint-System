@@ -4,12 +4,11 @@ const User = require("../models/userModels");
 
 const sendMail = async ({ email, emailType, userId }) => {
     try {
-        const transport = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || "sandbox.smtp.mailtrap.io",
-            port: process.env.SMTP_PORT || 2525,
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
             auth: {
-                user: process.env.SMTP_USER || "your_mailtrap_user",
-                pass: process.env.SMTP_PASS || "your_mailtrap_pass",
+                user: 'sheikhtauheed75@gmail.com',
+                pass: 'ledq golo ptkw asep'
             },
         });
 
@@ -23,7 +22,7 @@ const sendMail = async ({ email, emailType, userId }) => {
         await User.findByIdAndUpdate(userId, updateFields);
 
         const mailOption = {
-            from: process.env.EMAIL_FROM || 'no-reply@yourdomain.com',
+            from: 'sheikhtauheed75@gmail.com' || 'no-reply@yourdomain.com',
             to: email,
             subject: emailType === 'VERIFY' ? 'Verify your email' : 'Reset your password',
             html: `
@@ -34,7 +33,7 @@ const sendMail = async ({ email, emailType, userId }) => {
             `,
         };
 
-        const info = await transport.sendMail(mailOption);
+        const info = await transporter.sendMail(mailOption);
         console.log("Email sent: ", info);
 
     } catch (error) {
