@@ -10,6 +10,7 @@ import AdminProtectedRoutes from "./pages/AdminProtectedRoutes";
 import CareTakerProtectedRoutes from "./pages/CareTakerProtectedRoutes";
 import StudentProtectedRoutes from "./pages/StudentProtectedRoutes";
 import VerifyEmail from "./pages/VerifyEmail";
+import Dashboard from "./pages/Dashboard";
 
 
 const router = createBrowserRouter([
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
             {
                 element: <CareTakerProtectedRoutes />,
                 children: [
-                    { path: '/careTaker/dashboard/:careTakerId', element: <CareTakerDashboard /> }
+                    { path: '/c', element: <Dashboard/> }
                 ]
             },
             {
