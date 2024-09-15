@@ -74,40 +74,45 @@ export function CardComponent() {
         <Card
           key={complaint.id}
           href="#"
-          className="mx-2 my-4 w-full sm:w-1/2 lg:w-1/3 bg-white"
+          class="mx-2 my-4 w-full rounded-md bg-jmi-grey !important text-black"
         >
+          <div className="flex justify-between">
           <h5 className="text-xl font-bold tracking-tight">
             Complaint ID: {complaint.id}
           </h5>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            Status: {complaint.status}
+          <h5 className="text-jmi-green font-bold hover:underline">
+            UPDATE
+          </h5>
+          </div>
+          <p className="font-normal text-gray-700 ">
+            <span className="text-jmi-green font-semibold">Status:</span> {complaint.status}
           </p>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            Type: {complaint.type}
+          <p className="font-normal text-gray-700">
+          <span className="text-jmi-green">Type:</span> {complaint.type}
           </p>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            Description: {complaint.details.description}
+          <p className="font-normal text-gray-700">
+          <span className="text-jmi-green">Description:</span> {complaint.details.description}
           </p>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            Reported At:{" "}
+          <p className="font-normal text-gray-700">
+          <span className="text-jmi-green">Reported At:</span>{" "}
             {complaint.details.reported_at
               ? new Date(complaint.details.reported_at).toLocaleString()
               : "N/A"}
           </p>
           {complaint.status === "closed" && (
             <>
-              <p className="font-normal text-gray-700 dark:text-gray-400">
-                Resolved At:{" "}
+              <p className="font-normal text-gray-700">
+              <span className="text-jmi-green">Resolved At:</span>{" "}
                 {complaint.details.resolved_at
                   ? new Date(complaint.details.resolved_at).toLocaleString()
                   : "N/A"}
               </p>
-              <p className="font-normal text-gray-700 dark:text-gray-400">
-                Feedback:{" "}
+              <p className="font-normal text-gray-700">
+              <span className="text-jmi-green">Feedback:</span>{" "}
                 {complaint.feedback?.remarks || "No feedback available"}
               </p>
-              <p className="font-normal text-gray-700 dark:text-gray-400">
-                Rating:{" "}
+              <p className="font-normal text-gray-700">
+              <span className="text-jmi-green">Rating:</span>{" "}
                 {complaint.feedback?.ratings !== undefined
                   ? complaint.feedback.ratings
                   : "No rating available"}

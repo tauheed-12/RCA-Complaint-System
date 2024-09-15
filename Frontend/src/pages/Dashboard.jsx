@@ -4,12 +4,17 @@ import { BreadcrumbComponent } from "../components/CareTakerDashboard/breadcrumb
 import { CardComponent } from "../components/CareTakerDashboard/card";
 import { DropdownComponent } from "../components/CareTakerDashboard/dropdown";
 import "../components/CareTakerDashboard/styles.css"; // Adjust the path as needed
+import { Navbar } from "../components/CareTakerDashboard/navbar";
+import { ProfileCard } from "../components/CareTakerDashboard/hero";
+
 
 // Define the type for props
 
 const Dashboard = ({ name }) => {
   return (
     <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <ProfileCard />
       {/* Banner Image Section */}
       {/* <div className="relative">
         <div
@@ -21,6 +26,7 @@ const Dashboard = ({ name }) => {
           </div>
         </div>
       </div> */}
+
 
       <div className="flex grow">
         {/* Sidebar on the left with fixed width */}
@@ -38,7 +44,7 @@ const Dashboard = ({ name }) => {
           {/* Manage Complaints Section */}
           <div className="flex flex-1 flex-col p-4">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-2xl font-bold text-black text-desktop-heading font-ginto-nord">
                 Manage Complaints
               </h2>
               <div className="flex items-center gap-4">
@@ -50,11 +56,7 @@ const Dashboard = ({ name }) => {
             <main className="scrollable-content max-h-[calc(100vh-13rem)] grow p-4">
               <div className="flex flex-wrap gap-4">
                 <CardComponent />
-                <CardComponent />
-                <CardComponent />
-                <CardComponent />
-                <CardComponent />
-                <CardComponent />
+
                 {/* Add more CardComponent as needed */}
               </div>
             </main>
