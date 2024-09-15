@@ -3,7 +3,7 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import ComplaintFormModal from '../StudentDashboard/Complaint';
 import FeedbackFormModal from '../StudentDashboard/FeedBack';
 
-function Navbar() {
+export function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -83,6 +83,9 @@ function Navbar() {
           <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
             Check Status
           </button>
+          <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
+            Notifications
+          </button>
           <button
             className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold"
             onClick={openFeedbackModal}
@@ -108,4 +111,3 @@ function Navbar() {
   );
 }
 
-export default Navbar;
