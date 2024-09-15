@@ -16,7 +16,7 @@ import Dashboard from "./pages/Dashboard";
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <StudentDashboard />,
+        element: <RootPage />,
 
         children: [
             { path: '/', element: <HomePage /> },
