@@ -6,9 +6,8 @@ import { Card } from "flowbite-react";
 const complaints = [
   {
     id: "complaint_001",
+    title:"Power Socket not working",
     status: "open",
-    title: "Water leakage",
-    room : "34",
     type: "escalated",
     details: {
       description: "Service outage affecting multiple users.",
@@ -17,62 +16,12 @@ const complaints = [
   },
   {
     id: "complaint_002",
+    title: "Water Leake",
     status: "open",
-    title:"Power Socket not Working",
-    room : "3",
     type: "non escalated",
     details: {
       description: "Delay in delivery of order.",
       reported_at: "2024-08-21T09:15:00Z",
-    },
-  },
-  {
-    id: "complaint_003",
-    status: "open",
-    title: "Can't Survive in this hostel",
-    room : "44",
-    type: "critical",
-    details: {
-      description: "Security breach detected in the system.",
-      reported_at: "2024-08-22T11:45:00Z",
-    },
-  },
-  {
-    id: "complaint_004",
-    status: "closed",
-    title:"Unheigenic Roommate",
-    room : "4",
-    history: {
-      escalated: true,
-      critical: false,
-    },
-    feedback: {
-      remarks: "Issue resolved, but took longer than expected.",
-      ratings: 3,
-    },
-    details: {
-      description: "Customer service response delay.",
-      reported_at: "2024-08-18T10:05:00Z",
-      resolved_at: "2024-08-22T15:20:00Z",
-    },
-  },
-  {
-    id: "complaint_005",
-    status: "closed",
-    title:"Water Leake",
-    room : "67",
-    history: {
-      escalated: false,
-      critical: true,
-    },
-    feedback: {
-      remarks: "Critical issue handled well with timely updates.",
-      ratings: 5,
-    },
-    details: {
-      description: "System outage affecting critical services.",
-      reported_at: "2024-08-19T16:25:00Z",
-      resolved_at: "2024-08-21T12:00:00Z",
     },
   },
 ];
@@ -90,21 +39,19 @@ export function CardComponent() {
           <h5 className="text-xl font-bold tracking-tight">
             {complaint.title}
           </h5>
-          <h5 className="text-jmi-green font-bold hover:underline">
-            UPDATE
+          <h5 className="text-red-600 font-bold hover:underline">
+            DELETE
           </h5>
           </div>
+          
           <p className="font-normal text-gray-700 ">
             <span className="text-jmi-green font-semibold">Status:</span> {complaint.status}
           </p>
-          <p className="font-normal text-gray-700">
-          <span className="text-jmi-green">Complaint ID:</span> {complaint.id}
+          <p className="font-normal text-gray-700 ">
+            <span className="text-jmi-green">Complaint ID:</span> {complaint.id}
           </p>
           <p className="font-normal text-gray-700">
           <span className="text-jmi-green">Type:</span> {complaint.type}
-          </p>
-          <p className="font-normal text-gray-700">
-          <span className="text-jmi-green">Room no. :</span> {complaint.room}
           </p>
           <p className="font-normal text-gray-700">
           <span className="text-jmi-green">Description:</span> {complaint.details.description}
