@@ -1,6 +1,6 @@
 import React from 'react'
-import Navbar from '../components/StudentNavbar';
-import Main from '../components/StudentHero';
+import Navbar from '../components/StudentDashboard/StudentNavbar';
+import Main from '../components/StudentDashboard/StudentHero';
 
 function StudentDashboard() {
     return (

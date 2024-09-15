@@ -4,11 +4,12 @@ import { Dropdown } from "flowbite-react";
 
 export function DropdownComponent() {
   return (
-    <Dropdown label="Dropdown button" dismissOnClick={false}>
-      <Dropdown.Item>Dashboard</Dropdown.Item>
-      <Dropdown.Item>Settings</Dropdown.Item>
-      <Dropdown.Item>Earnings</Dropdown.Item>
-      <Dropdown.Item>Sign out</Dropdown.Item>
+    <Dropdown label="Status" dismissOnClick={false} class="bg-jmi-green mr-10 rounded-lg">
+      <Dropdown.Item>Resolved</Dropdown.Item>
+      <Dropdown.Item>Open</Dropdown.Item>
+      <Dropdown.Item>Pending</Dropdown.Item>
+
+
     </Dropdown>
   );
 }

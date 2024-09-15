@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import ComplaintFormModal from './Complaint';
-import FeedbackFormModal from './FeedBack';
+import ComplaintFormModal from '../StudentDashboard/Complaint';
+import FeedbackFormModal from '../StudentDashboard/FeedBack';
 
 function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
