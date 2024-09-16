@@ -59,7 +59,7 @@ const complaints = [
   {
     id: "complaint_005",
     status: "closed",
-    title:"Water Leake",
+    title:"Water Leak",
     room : "67",
     history: {
       escalated: false,
@@ -86,7 +86,7 @@ export function CardComponent() {
           href="#"
           class="mx-2 my-4 w-full rounded-md bg-jmi-grey !important text-black"
         >
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-2">
           <h5 className="text-xl font-bold tracking-tight">
             {complaint.title}
           </h5>
