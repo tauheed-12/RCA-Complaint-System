@@ -30,7 +30,7 @@ const Dashboard = ({ name }) => {
 
       <div className="flex grow">
         {/* Sidebar on the left with fixed width */}
-        <aside className="h-full w-64 shrink-0">
+        <aside className="h-full w-64 shrink-0  xl:block hidden">
           <SidebarComponent />
         </aside>
 

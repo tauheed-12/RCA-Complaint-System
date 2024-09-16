@@ -1,59 +1,14 @@
 
-// export function NavbarComponent() {
-//   return (
-//     <Navbar fluid rounded>
-//       <Navbar.Brand>
-//         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-//           Hostel 1
-//         </span>
-//       </Navbar.Brand>
-//       <div className="flex items-center space-x-4 md:order-2">
-//         <DarkThemeToggle />
-//         <Button>Notifications</Button>
-//         <Navbar.Toggle />
-//       </div>
-//       <Navbar.Collapse>
-//         <Navbar.Link as={Link} to="/">
-//           Dashboard
-//         </Navbar.Link>
-//         <Navbar.Link as={Link} to="/check-status">
-//           Check Status
-//         </Navbar.Link>
-//         <Navbar.Link as={Link} to="/feedback">
-//           Feedback
-//         </Navbar.Link>
-//         <Navbar.Link as={Link} to="#">
-//           Suggestions
-//         </Navbar.Link>
-//         <Navbar.Link as={Link} to="/contact">
-//           Contact
-//         </Navbar.Link>
-//       </Navbar.Collapse>
-//     </Navbar>
-//   );
-// }
-
-
 import React, { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
-// import ComplaintFormModal from './Complaint';
 import FeedbackFormModal from '../StudentDashboard/FeedBack';
 
 export function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const openComplaintModal = () => {
-    setIsComplaintModalOpen(true);
-  };
-
-  const closeComplaintModal = () => {
-    setIsComplaintModalOpen(false);
   };
 
   const openFeedbackModal = () => {
@@ -94,7 +49,6 @@ export function Navbar() {
           </button>
           <button
             className="px-4 py-2 rounded-md bg-jmi-green text-white hover:bg-jmi-hovergreen font-ginto font-semibold"
-            onClick={openComplaintModal}
           >
             Notifications
           </button>
@@ -113,6 +67,14 @@ export function Navbar() {
           </button>
         </div>
         <nav className="flex flex-col space-y-4 px-4">
+        <button
+            className="px-4 py-2 rounded-md bg-jmi-green text-white hover:bg-jmi-hovergreen font-ginto font-semibold"
+            onClick={() => {
+              toggleSidebar();
+            }}
+          >
+            Notifications
+          </button>
           <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
             Dashboard
           </button>
@@ -125,19 +87,16 @@ export function Navbar() {
           >
             Feedback
           </button>
-          <button
-            className="px-4 py-2 rounded-md bg-jmi-green text-white hover:bg-jmi-hovergreen font-ginto font-semibold"
-            onClick={() => {
-              toggleSidebar();
-              openComplaintModal();
-            }}
-          >
-            File complaint
+          <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
+          Update details
           </button>
+          <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
+          Escalate
+          </button>
+          
         </nav>
       </div>
 
-      {/* <ComplaintFormModal isOpen={isComplaintModalOpen} onClose={closeComplaintModal} /> */}
 
       <FeedbackFormModal isOpen={isFeedbackModalOpen} onClose={closeFeedbackModal} />
     </div>
