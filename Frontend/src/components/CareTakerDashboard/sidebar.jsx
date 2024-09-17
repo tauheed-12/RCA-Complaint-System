@@ -29,7 +29,7 @@ export function SidebarComponent() {
         <Sidebar.Items>
           <Sidebar.ItemGroup>
             <Sidebar.Item href="#" icon={HiChartPie}>
-              Update details
+              Update Details
             </Sidebar.Item>
             <Sidebar.Item href="#" icon={HiInbox}>
               Escalate

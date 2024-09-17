@@ -77,6 +77,15 @@ export function Navbar() {
           </button>
         </div>
         <nav className="flex flex-col space-y-4 px-4">
+        <button
+            className="px-4 py-2 rounded-md bg-jmi-green text-white hover:bg-jmi-hovergreen font-ginto font-semibold"
+            onClick={() => {
+              toggleSidebar();
+              openComplaintModal();
+            }}
+          >
+            File complaint
+          </button>
           <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
             Dashboard
           </button>
@@ -92,15 +101,13 @@ export function Navbar() {
           >
             Feedback
           </button>
-          <button
-            className="px-4 py-2 rounded-md bg-jmi-green text-white hover:bg-jmi-hovergreen font-ginto font-semibold"
-            onClick={() => {
-              toggleSidebar();
-              openComplaintModal();
-            }}
-          >
-            File complaint
+          <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
+            Update Details
           </button>
+          <button className="px-4 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-jmi-grey font-ginto font-semibold">
+            My Complaints
+          </button>
+          
         </nav>
       </div>
 
