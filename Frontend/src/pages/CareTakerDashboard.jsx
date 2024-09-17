@@ -15,21 +15,8 @@ const CareTakerDashboard = ({ name }) => {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <ProfileCard />
-      {/* Banner Image Section */}
-      {/* <div className="relative">
-        <div
-          className="h-40 w-full bg-cover bg-center"
-          style={{ backgroundImage: 'url("/path/to/your/image.jpg")' }}
-        >
-          <div className="flex h-full items-center justify-center bg-black/50">
-            <h1 className="text-4xl font-bold text-white">{name}</h1>
-          </div>
-        </div>
-      </div> */}
-
 
       <div className="flex grow">
-        {/* Sidebar on the left with fixed width */}
         <aside className="h-full w-64 shrink-0">
           <SidebarComponent />
         </aside>
