@@ -1,14 +1,15 @@
 const nodemailer = require("nodemailer");
 const uniqid = require("uniqid");
 const User = require("../models/userModels");
+require('dotenv').config();
 
 const sendMail = async ({ email, emailType, userId }) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: '',
-                pass: ''
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD
             },
         });
 

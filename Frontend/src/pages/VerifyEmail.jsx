@@ -6,7 +6,6 @@ const VerifyEmail = () => {
     const navigate = useNavigate();
     const [verificationStatus, setVerificationStatus] = useState('Verifying...');
 
-    // Extract the token from the query string
     const useQuery = () => {
         return new URLSearchParams(useLocation().search);
     };

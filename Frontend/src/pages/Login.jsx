@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [loginInfo, setLoginInfo] = useState({
@@ -25,8 +26,11 @@ const Login = () => {
         }
       })
       if (response.data) {
+        Cookies.set('userId', response.data.userId);
+        Cookies.set('token', response.data.token);
+        Cookies.set('isAdmin', response.data.isAdmin);
+        Cookies.set('isCareTaker', response.data.isCareTaker)
         console.log('logged in successfully', response.data)
-
       }
     } catch (error) {
       console.log('error during login', error)

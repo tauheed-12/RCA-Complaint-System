@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import AdminDashboard from "./pages/AdminDashboard";
-import CareTakerDashboard from "./pages/CareTakerDashboard";
+
 import StudentDashboard from "./pages/StudentDashboard";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
@@ -10,7 +10,7 @@ import AdminProtectedRoutes from "./pages/AdminProtectedRoutes";
 import CareTakerProtectedRoutes from "./pages/CareTakerProtectedRoutes";
 import StudentProtectedRoutes from "./pages/StudentProtectedRoutes";
 import VerifyEmail from "./pages/VerifyEmail";
-import Dashboard from "./pages/Dashboard";
+import CareTakerDashboard from "./pages/CareTakerDashboard";
 
 
 const router = createBrowserRouter([
@@ -31,14 +31,14 @@ const router = createBrowserRouter([
             {
                 element: <CareTakerProtectedRoutes />,
                 children: [
-                    { path: '/c', element: <Dashboard/> }
+                    { path: '/c', element: <CareTakerDashboard /> }
                 ]
             },
             {
                 element: <StudentProtectedRoutes />,
                 children: [
                     { path: '/student/register', element: <Register /> },
-                    { path: '/student/dashboard/:studentId', element: <StudentDashboard /> }
+                    { path: '/s', element: <StudentDashboard /> }
                 ]
             }
         ]
