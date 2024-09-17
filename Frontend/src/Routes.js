@@ -16,7 +16,7 @@ import CareTakerDashboard from "./pages/CareTakerDashboard";
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <StudentDashboard />,
+        element: <RootPage />,
 
         children: [
             { path: '/', element: <HomePage /> },

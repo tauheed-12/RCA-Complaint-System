@@ -1,15 +1,21 @@
 const Complaint = require('../models/complaintModel');
+const User = require('../models/userModels');
 
 exports.addComplaint = async (req, res) => {
     try {
-        const { student, title, hostel, description, images } = req.body;
+        const images = req.files.map(file => file.path);
+
+        const { title, description, userId } = req.body;
+
+        const userData = await User.findById(userId);
+        userHostel = userData.hostel;
 
         const newComplaint = new Complaint({
-            student,
+            student: userId,
             title,
-            hostel,
+            hostel: userHostel,
             description,
-            images,
+            images: images,
         });
 
         const complaint = await newComplaint.save();
@@ -35,12 +41,21 @@ exports.deleteComplaint = async (req, res) => {
 
 exports.allComplaints = async (req, res) => {
     try {
-        const { studentId } = req.params.id;
+        const { userId } = req.params.id;
 
-        const allComplaints = await Complaint.find({ student: studentId });
+        const userData = await User.findById(userId);
+
+        const allComplaints = await Complaint.find({ student: userId });
         console.log(allComplaints);
 
-        return res.status(200).json(allComplaints);
+        const responseData = {
+            studentName: userData.name,
+            hostel: userData.hostel,
+            numberOfComplaints: allComplaints.length,
+            complaints: allComplaints
+        }
+
+        return res.status(200).json(responseData);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

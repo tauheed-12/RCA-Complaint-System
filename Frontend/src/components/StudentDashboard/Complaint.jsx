@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 
 function ComplaintFormModal({ isOpen, onClose }) {
   const [images, setImages] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { userId, token } = useAuth();
 
   if (!isOpen) return null;
 
@@ -10,8 +17,32 @@ function ComplaintFormModal({ isOpen, onClose }) {
     setImages(selectedFiles);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('title', title);
+    formData.append('description', description);
+    images.forEach((image) => formData.append('images', image));
+
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const response = await axios.post('http://localhost:8080/student/addComplaint', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log(response.data);
+      alert(response.data.message);
+      onClose();
+    } catch (error) {
+      setError('Failed to submit complaint. Please try again.');
+      console.log("Error during adding complaint", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,6 +59,8 @@ function ComplaintFormModal({ isOpen, onClose }) {
               id="title"
               className="w-full px-4 py-2 border rounded-md text-desktop-body font-ginto text-gray-800 focus:outline-none focus:ring-2 focus:ring-jmi-green"
               placeholder="Enter complaint title"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
               required
             />
           </div>
@@ -40,6 +73,8 @@ function ComplaintFormModal({ isOpen, onClose }) {
               id="description"
               className="w-full px-4 py-2 border rounded-md text-desktop-body font-ginto text-gray-800 focus:outline-none focus:ring-2 focus:ring-jmi-green"
               placeholder="Describe your complaint"
+              onChange={(e) => setDescription(e.target.value)}
+              value={description}
               rows="4"
               required
             ></textarea>
@@ -56,6 +91,7 @@ function ComplaintFormModal({ isOpen, onClose }) {
               accept="image/*"
               multiple
               onChange={handleImageChange}
+              aria-label="Upload images"
             />
           </div>
 
@@ -75,6 +111,8 @@ function ComplaintFormModal({ isOpen, onClose }) {
             </div>
           )}
 
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+
           <div className="flex justify-end space-x-4">
             <button
               type="button"
@@ -86,8 +124,9 @@ function ComplaintFormModal({ isOpen, onClose }) {
             <button
               type="submit"
               className="px-4 py-2 rounded-md bg-jmi-green text-white font-ginto font-semibold hover:bg-jmi-hovergreen"
+              disabled={isSubmitting}
             >
-              Submit
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </form>

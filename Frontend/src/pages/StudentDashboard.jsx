@@ -1,67 +1,77 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SidebarComponent } from "../components/StudentDashboard/sidebar";
 import { BreadcrumbComponent } from "../components/StudentDashboard/breadcrumb";
 import { CardComponent } from "../components/StudentDashboard/card";
 import { DropdownComponent } from "../components/StudentDashboard/dropdown";
-import "../components/CareTakerDashboard/styles.css"; // Adjust the path as needed
+import "../components/CareTakerDashboard/styles.css";
 import { Navbar } from "../components/StudentDashboard/StudentNavbar";
 import { StudentProfileCard } from "../components/StudentDashboard/StudentHero";
-import { MainFooter } from "../components/StudentDashboard/Footer";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 
-// Define the type for props
+const Dashboard = () => {
+  const [studentData, setStudentData] = useState({
+    studentName: "John Doe",
+    hostel: "HostelA",
+    roomNumber: 12,
+    numberOfComplaints: 0,
+    complaints: [{
+      title: "something",
+      description: "test",
+      complaintId: "24",
+      createdAt: "sf",
+      status: "pending"
+    }]
+  })
+  const { userId } = useAuth();
 
-const Dashboard = ({ name }) => {
+  useEffect(() => {
+    const fetchComplaint = async () => {
+      try {
+        const response = axios.get('http://localhost:8080/student/allComplaints', { userId });
+        console.log(response.data);
+        setStudentData(response.data.responseData)
+      } catch (error) {
+        console.log("Error during fetching students complaint")
+      }
+    }
+    fetchComplaint();
+  }, [userId]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <StudentProfileCard />
-      {/* Banner Image Section */}
-      {/* <div className="relative">
-        <div
-          className="h-40 w-full bg-cover bg-center"
-          style={{ backgroundImage: 'url("/path/to/your/image.jpg")' }}
-        >
-          <div className="flex h-full items-center justify-center bg-black/50">
-            <h1 className="text-4xl font-bold text-white">{name}</h1>
-          </div>
-        </div>
-      </div> */}
-
+      <StudentProfileCard studentProfileData={studentData} />
 
       <div className="flex grow">
-        {/* Sidebar on the left with fixed width */}
         <aside className="h-full w-64 shrink-0 hidden xl:block">
           <SidebarComponent />
         </aside>
 
-        {/* Main content area */}
         <div className="flex grow flex-col">
-          {/* Breadcrumb below the banner and to the right of the sidebar */}
           <div className="p-4">
             <BreadcrumbComponent />
           </div>
 
-          {/* Manage Complaints Section */}
           <div className="flex flex-1 flex-col p-4">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-black text-desktop-heading font-ginto-nord">
                 My Complaints
               </h2>
               <div className="flex items-center gap-4">
-                <DropdownComponent /> {/* Use DropdownComponent for Filter */}
+                <DropdownComponent />
               </div>
             </div>
 
-            {/* Scrollable card area */}
             <main className="scrollable-content max-h-[calc(100vh-13rem)] grow p-4">
               <div className="flex flex-wrap gap-4 w-full">
-                <CardComponent />
-
-                {/* Add more CardComponent as needed */}
+                {studentData.complaints.map((complaint, id) => (
+                  <CardComponent studentComplaints={complaint} key={id} />
+                ))}
               </div>
             </main>
-            {/* <MainFooter /> */}
+
           </div>
         </div>
       </div>

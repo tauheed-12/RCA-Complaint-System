@@ -3,27 +3,25 @@ const User = require('../models/userModels');
 
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const tokenStr = authHeader && authHeader.split(' ')[1];
-    const token = JSON.parse(tokenStr);
-    console.log(token);
+    const token = authHeader && authHeader.split(' ')[1]; // Get the token part after 'Bearer'
 
-    if (token == null) return res.json({ message: 'Invalid token' }, { status: 401 });
+    if (!token) return res.status(401).json({ message: 'Invalid token' });
 
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+
         const user = await User.findById(decoded._id);
 
         if (!user) {
-            throw new Error();
+            throw new Error('User not found');
         }
-
+        console.log('user Authenticated')
         req.user = user;
         next();
 
     } catch (error) {
         res.status(401).send({ error: 'Please authenticate.' });
     }
-
-}
+};
 
 module.exports = authenticateToken;

@@ -24,11 +24,7 @@ const complaintSchema = new mongoose.Schema({
         enum: ['Pending', 'In Progress', 'Resolved'],
         default: 'Pending'
     },
-    images: [
-        {
-            type: String,
-        }
-    ],
+    images: [String],
     createdAt: {
         type: Date,
         default: Date.now
