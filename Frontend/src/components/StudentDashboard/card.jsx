@@ -4,10 +4,12 @@ import { useAuth } from "../../context/AuthContext";
 
 export function CardComponent({ studentComplaint }) {
   const { token } = useAuth();
+  console.log(studentComplaint);
   const handleDelete = async () => {
     try {
-      const productId = studentComplaint._id;
-      const response = await axios.get('http://localhost:8080/student/deleteComplaint', { productId }, {
+      const complaintId = studentComplaint._id;
+      const response = await axios.get('http://localhost:8080/student/deleteComplaint', {
+        params: { complaintId },
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -64,12 +66,6 @@ export function CardComponent({ studentComplaint }) {
               <span className="text-jmi-green">Feedback:</span>{" "}
               {studentComplaint.updatedAt || "No feedback available"}
             </p>
-            {/* <p className="font-normal text-gray-700">
-                <span className="text-jmi-green">Rating:</span>{" "}
-                {complaint.feedback?.ratings !== undefined
-                  ? complaint.feedback.ratings
-                  : "No rating available"}
-              </p> */}
           </>
         )}
       </Card>

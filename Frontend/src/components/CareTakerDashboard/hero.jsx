@@ -1,23 +1,7 @@
-import React, { useEffect, useState } from 'react';
 import backgroundImage from '../assets/RCA.png';
 import profileImageUrl from '../assets/default.png'
 
-export function ProfileCard(){
-  const [student, setStudent] = useState({
-    name: 'caretaker_name',
-    status: 'Caretaker',
-    hostel: 'Hostel 1',
-    regCount: 67,
-    profileImageUrl: 'https://example.com/image.jpg',
-  });
-
-  useEffect(() => {
-    const studentData = JSON.parse(localStorage.getItem('studentDetails'));
-    if (studentData) {
-      setStudent(studentData);
-    }
-  }, []);
-
+export function ProfileCard({ careTakerData }) {
   return (
     <div className="relative w-full">
       <div
@@ -37,13 +21,13 @@ export function ProfileCard(){
           />
 
           <div className="text-gray-800 flex flex-col gap-1 sm:gap-2">
-            <div className="font-semibold text-xl sm:text-2xl">{student.name}</div>
-            <p className="text-xs sm:text-sm">{student.status}</p>
+            <div className="font-semibold text-xl sm:text-2xl">{careTakerData.name}</div>
+            <p className="text-xs sm:text-sm">{"hello"}</p>
             <p className="text-xs sm:text-sm flex items-center mt-1 sm:mt-2">
-              <span role="img" aria-label="Hostel">🏨</span> {student.hostel}
+              <span role="img" aria-label="Hostel">🏨</span> {careTakerData.hostel}
             </p>
             <p className="text-xs sm:text-sm flex items-center">
-              <span role="img" aria-label="Complaints">👥</span> {student.regCount} Complaints
+              <span role="img" aria-label="Complaints">👥</span> {careTakerData.numberOfComplaints} Complaints
             </p>
           </div>
         </div>

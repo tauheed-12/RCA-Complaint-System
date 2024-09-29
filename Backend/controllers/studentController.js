@@ -29,7 +29,7 @@ exports.addComplaint = async (req, res) => {
 
 exports.deleteComplaint = async (req, res) => {
     try {
-        const { complaintId } = req.params.id;
+        const { complaintId } = req.query;
 
         await Complaint.findByIdAndDelete(complaintId);
 
@@ -41,9 +41,17 @@ exports.deleteComplaint = async (req, res) => {
 
 exports.allComplaints = async (req, res) => {
     try {
-        const { userId } = req.params.id;
+        const { userId } = req.query;
+        console.log(userId);
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
 
         const userData = await User.findById(userId);
+        if (!userData) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
         const allComplaints = await Complaint.find({ student: userId });
         console.log(allComplaints);
@@ -52,11 +60,12 @@ exports.allComplaints = async (req, res) => {
             studentName: userData.name,
             hostel: userData.hostel,
             numberOfComplaints: allComplaints.length,
-            complaints: allComplaints
-        }
+            complaints: allComplaints,
+        };
 
-        return res.status(200).json(responseData);
+        return res.status(200).json({ responseData });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
+

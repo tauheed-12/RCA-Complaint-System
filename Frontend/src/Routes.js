@@ -31,14 +31,14 @@ const router = createBrowserRouter([
             {
                 element: <CareTakerProtectedRoutes />,
                 children: [
-                    { path: '/c', element: <CareTakerDashboard /> }
+                    { path: '/caretaker/:id', element: <CareTakerDashboard /> }
                 ]
             },
             {
                 element: <StudentProtectedRoutes />,
                 children: [
                     { path: '/student/register', element: <Register /> },
-                    { path: '/s', element: <StudentDashboard /> }
+                    { path: '/student/:id', element: <StudentDashboard /> }
                 ]
             }
         ]

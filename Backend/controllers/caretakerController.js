@@ -3,29 +3,42 @@ const Complaint = require('../models/complaintModel');
 
 exports.getComplaints = async (req, res) => {
     try {
-        const { userId } = req.params.id;
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
         const user = await User.findById(userId);
-
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-
         const hostelName = user.hostel;
-
         const complaints = await Complaint.find({ hostel: hostelName });
-        return res.status(200).json(complaints);
+        const userData = {
+            name: user.name,
+            hostel: user.hostel,
+            roomNumber: user.roomNumber,
+        };
+
+        return res.status(200).json({ user: userData, complaints });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        console.error("Error fetching complaints:", error);
+        return res.status(500).json({ error: 'An internal server error occurred. Please try again later.' });
     }
 };
 
+
 exports.updateStatus = async (req, res) => {
     try {
-        const { complaintId, status } = req.body;
-
+        let { complaintId, status } = req.body;
+        if (status === "Pending") {
+            status = "In Progress";
+        } else if (status === "In Progress") {
+            status = "Resolved"
+        }
         const complaint = await Complaint.findByIdAndUpdate(
             complaintId,
             { status: status },
+            { updatedAt: Date.now() },
             { new: true }
         );
 

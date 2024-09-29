@@ -9,35 +9,53 @@ import { StudentProfileCard } from "../components/StudentDashboard/StudentHero";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
-
 const Dashboard = () => {
   const [studentData, setStudentData] = useState({
     studentName: "John Doe",
     hostel: "HostelA",
     roomNumber: 12,
     numberOfComplaints: 0,
-    complaints: [{
-      title: "something",
-      description: "test",
-      complaintId: "24",
-      createdAt: "sf",
-      status: "pending"
-    }]
-  })
-  const { userId } = useAuth();
+    complaints: [
+      {
+        title: "something",
+        description: "test",
+        complaintId: "24",
+        createdAt: "sf",
+        status: "pending",
+      },
+    ],
+  });
+  const { userId, token } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
-        const response = axios.get('http://localhost:8080/student/allComplaints', { userId });
+        setLoading(true);
+        const response = await axios.get(
+          "http://localhost:8080/student/allComplaints",
+          {
+            params: { userId },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log(response.data);
-        setStudentData(response.data.responseData)
+        setStudentData(response.data.responseData);
       } catch (error) {
-        console.log("Error during fetching students complaint")
+        console.log("Error during fetching students complaint", error);
+      } finally {
+        setLoading(false);
       }
-    }
-    fetchComplaint();
-  }, [userId]);
+    };
+
+    if (userId) fetchComplaint();
+  }, [userId, token]);
+
+  if (loading) {
+    return <h1>Loading the data...</h1>;
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -66,9 +84,13 @@ const Dashboard = () => {
 
             <main className="scrollable-content max-h-[calc(100vh-13rem)] grow p-4">
               <div className="flex flex-wrap gap-4 w-full">
-                {studentData.complaints.map((complaint, id) => (
-                  <CardComponent studentComplaints={complaint} key={id} />
-                ))}
+                {studentData.complaints && studentData.complaints.length > 0 ? (
+                  studentData.complaints.map((complaint, id) => (
+                    <CardComponent studentComplaint={complaint} key={id} />
+                  ))
+                ) : (
+                  <p>No complaints registered</p>
+                )}
               </div>
             </main>
 

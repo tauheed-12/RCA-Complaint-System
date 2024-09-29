@@ -2,13 +2,14 @@ import axios from 'axios';
 import React from 'react';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: ""
   })
-
+  const navigate = useNavigate();
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLoginInfo({
@@ -29,8 +30,16 @@ const Login = () => {
         Cookies.set('userId', response.data.userId);
         Cookies.set('token', response.data.token);
         Cookies.set('isAdmin', response.data.isAdmin);
-        Cookies.set('isCareTaker', response.data.isCareTaker)
-        console.log('logged in successfully', response.data)
+        Cookies.set('isCareTaker', response.data.isCareTaker);
+        console.log('logged in successfully', response.data);
+        if (response.data.isCareTaker === true) {
+          navigate(`/caretaker/${response.data.userId}`);
+        } else if (response.data.isAdmin === 'true') {
+          navigate(`/admin/${response.data.userId}`)
+        }
+        else {
+          navigate(`/student/${response.data.userId}`)
+        }
       }
     } catch (error) {
       console.log('error during login', error)
