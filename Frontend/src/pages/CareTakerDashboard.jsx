@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 import { SidebarComponent } from "../components/CareTakerDashboard/sidebar";
 import { BreadcrumbComponent } from "../components/CareTakerDashboard/breadcrumb";
 import { CardComponent } from "../components/CareTakerDashboard/card";
 import { DropdownComponent } from "../components/CareTakerDashboard/dropdown";
-import "../components/CareTakerDashboard/styles.css";
 import { Navbar } from "../components/CareTakerDashboard/navbar";
 import { ProfileCard } from "../components/CareTakerDashboard/hero";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
+import "../components/CareTakerDashboard/styles.css";
 
 const CareTakerDashboard = () => {
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userId, token } = useAuth();
+  const { userId, token, refresh } = useAuth();
   const [careTakerData, setCareTakerData] = useState({
     name: "",
     hostel: "",
@@ -49,7 +51,7 @@ const CareTakerDashboard = () => {
       }
     };
     fetchCareTakerData();
-  }, [userId, token]);
+  }, [userId, token, refresh]);
 
   if (loading) {
     return <h1>Loading the caretaker data...</h1>;

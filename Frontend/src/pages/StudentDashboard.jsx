@@ -15,18 +15,11 @@ const Dashboard = () => {
     hostel: "HostelA",
     roomNumber: 12,
     numberOfComplaints: 0,
-    complaints: [
-      {
-        title: "something",
-        description: "test",
-        complaintId: "24",
-        createdAt: "sf",
-        status: "pending",
-      },
-    ],
+    complaints: [],
   });
-  const { userId, token } = useAuth();
+  const { userId, token, refresh } = useAuth();
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchComplaint = async () => {
@@ -51,7 +44,7 @@ const Dashboard = () => {
     };
 
     if (userId) fetchComplaint();
-  }, [userId, token]);
+  }, [userId, token, refresh]);
 
   if (loading) {
     return <h1>Loading the data...</h1>;

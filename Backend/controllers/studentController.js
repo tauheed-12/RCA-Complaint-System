@@ -1,5 +1,6 @@
 const Complaint = require('../models/complaintModel');
 const User = require('../models/userModels');
+const cloudinary = require('../config/cloudinaryConfig');
 
 exports.addComplaint = async (req, res) => {
     try {
@@ -31,10 +32,25 @@ exports.deleteComplaint = async (req, res) => {
     try {
         const { complaintId } = req.query;
 
-        await Complaint.findByIdAndDelete(complaintId);
+        const complaint = await Complaint.findById(complaintId);
+        if (!complaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
 
-        return res.status(200).json({ message: 'Complaint deleted successfully' });
+        const deletePromises = complaint.images.map(async (imageUrl) => {
+            const publicId = imageUrl.split('/').pop().split('.')[0];
+            return cloudinary.uploader.destroy(publicId);
+        });
+
+        await Promise.all(deletePromises);
+        console.log('All images deleted from Cloudinary');
+
+        await Complaint.findByIdAndDelete(complaintId);
+        console.log('Complaint deleted successfully');
+
+        return res.status(200).json({ message: 'Complaint and images deleted successfully' });
     } catch (error) {
+        console.error('Error deleting complaint and images:', error);
         return res.status(500).json({ error: error.message });
     }
 };
@@ -54,7 +70,6 @@ exports.allComplaints = async (req, res) => {
         }
 
         const allComplaints = await Complaint.find({ student: userId });
-        console.log(allComplaints);
 
         const responseData = {
             studentName: userData.name,

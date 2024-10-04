@@ -3,8 +3,7 @@ import { Card } from "flowbite-react";
 import { useAuth } from "../../context/AuthContext";
 
 export function CardComponent({ studentComplaint }) {
-  const { token } = useAuth();
-  console.log(studentComplaint);
+  const { token, setRefresh } = useAuth();
   const handleDelete = async () => {
     try {
       const complaintId = studentComplaint._id;
@@ -15,6 +14,7 @@ export function CardComponent({ studentComplaint }) {
         }
       });
       console.log(response.data);
+      setRefresh(prev => prev + 1);
 
     } catch (error) {
       console.log("Error during deleting the student complaint", error)
@@ -24,7 +24,6 @@ export function CardComponent({ studentComplaint }) {
     <div className="flex flex-wrap w-full">
       <Card
         key={studentComplaint._id}
-        href="#"
         class="mx-2 my-4 w-full rounded-md bg-jmi-grey !important text-black"
       >
         <div className="flex justify-between gap-2">

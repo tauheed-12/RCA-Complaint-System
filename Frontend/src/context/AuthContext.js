@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [isCareTaker, setIsCareTaker] = useState(false);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(1);
 
     useEffect(() => {
         const cookieUserId = Cookies.get('userId');
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ userId, isAdmin, isCareTaker, token, loading, logout }}>
+        <AuthContext.Provider value={{ userId, setUserId, setIsAdmin, setIsCareTaker, setToken, isAdmin, isCareTaker, token, loading, logout, setRefresh, refresh }}>
             {!loading ? children : <div>Loading...</div>}
         </AuthContext.Provider>
     );

@@ -1,55 +1,73 @@
 import axios from 'axios';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const [loginInfo, setLoginInfo] = useState({
-    email: "",
-    password: ""
-  })
+
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { setUserId, setIsAdmin, setIsCareTaker, setToken } = useAuth();
+
   const navigate = useNavigate();
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setLoginInfo({
-      ...loginInfo,
-      [name]: value
-    })
-  }
+    setLoginInfo({ ...loginInfo, [name]: value });
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
+    setError(null);
+
+    if (!loginInfo.email || !loginInfo.password) {
+      setError('Both fields are required.');
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:8080/auth/login', JSON.stringify(loginInfo), {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+        headers: { 'Content-Type': 'application/json' }
+      });
+
       if (response.data) {
-        Cookies.set('userId', response.data.userId);
-        Cookies.set('token', response.data.token);
-        Cookies.set('isAdmin', response.data.isAdmin);
-        Cookies.set('isCareTaker', response.data.isCareTaker);
-        console.log('logged in successfully', response.data);
-        if (response.data.isCareTaker === true) {
+        const expires = document.getElementById('rememberMe').checked ? { expires: 7 } : {};
+
+        Cookies.set('userId', response.data.userId, expires);
+        Cookies.set('token', response.data.token, expires);
+        Cookies.set('isAdmin', response.data.isAdmin, expires);
+        Cookies.set('isCareTaker', response.data.isCareTaker, expires);
+
+        setUserId(response.data.userId);
+        setIsAdmin(response.data.isAdmin);
+        setIsCareTaker(response.data.isCareTaker);
+        setToken(response.data.token);
+
+        if (response.data.isCareTaker) {
           navigate(`/caretaker/${response.data.userId}`);
         } else if (response.data.isAdmin === 'true') {
-          navigate(`/admin/${response.data.userId}`)
+          navigate(`/admin/${response.data.userId}`);
+        } else {
+          navigate(`/student/${response.data.userId}`);
         }
-        else {
-          navigate(`/student/${response.data.userId}`)
-        }
+
       }
     } catch (error) {
-      console.log('error during login', error)
+      console.error('error during login', error);
+      setError('Invalid email or password. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-jmi-grey">
-      <form className="max-w-md w-full p-6 bg-white shadow-lg rounded-md">
+      <form className="max-w-md w-full p-6 bg-white shadow-lg rounded-md" onSubmit={handleSubmit}>
         <h3 className="text-2xl font-semibold mb-6 text-center">Sign In</h3>
-
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
           <input
@@ -60,9 +78,9 @@ const Login = () => {
             name='email'
             value={loginInfo.email}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div className="mb-4">
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
           <input
@@ -73,9 +91,9 @@ const Login = () => {
             name='password'
             value={loginInfo.password}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div className="flex items-center mb-4">
           <input
             id="rememberMe"
@@ -84,20 +102,11 @@ const Login = () => {
           />
           <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">Remember me</label>
         </div>
-
         <div className="mb-6">
-          <button type="submit"
-            onClick={handleSubmit}
-            className="w-full py-2 px-4 bg-jmi-green text-white font-semibold 
-          rounded-md shadow-sm hover:bg-jmi-hovergreen focus:outline-none focus:ring-2 
-          focus:ring-jmi-green focus:ring-offset-2">
-            Submit
+          <button type="submit" className="w-full py-2 px-4 bg-jmi-green text-white font-semibold rounded-md shadow-sm hover:bg-jmi-hovergreen focus:outline-none focus:ring-2 focus:ring-jmi-green focus:ring-offset-2">
+            {loading ? 'Loading...' : 'Submit'}
           </button>
         </div>
-
-        <p className="text-sm text-gray-600 text-center">
-          {/* Forgot <a href="#" className="text-jmi-green hover:text-jmi-hovergreen">password?</a> */}
-        </p>
       </form>
     </div>
   );

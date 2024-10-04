@@ -26,10 +26,8 @@ exports.userRegister = async (req, res) => {
             isAdmin,
             role: role
         });
-        console.log(newUser);
 
         const savedUser = await newUser.save();
-        console.log(savedUser);
 
         await sendMail({ email, emailType: "VERIFY", userId: savedUser._id });
 
@@ -60,7 +58,6 @@ exports.userLogin = async (req, res) => {
         }
 
         const token = jwt.sign({ _id: user }, process.env.TOKEN_SECRET, { expiresIn: "50m" });
-        console.log(token);
 
         return res.status(200).json({
             message: "User logged in successfully",
@@ -88,8 +85,6 @@ exports.verifyEmail = async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: "Invalid token details" });
         }
-
-        console.log(user);
 
         user.isVerified = true;
         user.verifyToken = undefined;
@@ -125,7 +120,6 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyPasswordToken = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
-        console.log(token);
 
         const user = await User.findOne({
             forgotPasswordToken: token,

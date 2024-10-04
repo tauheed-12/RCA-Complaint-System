@@ -8,7 +8,7 @@ function ComplaintFormModal({ isOpen, onClose }) {
   const [description, setDescription] = useState('');
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { userId, token } = useAuth();
+  const { userId, token, setRefresh } = useAuth();
 
   if (!isOpen) return null;
 
@@ -35,7 +35,7 @@ function ComplaintFormModal({ isOpen, onClose }) {
         }
       });
       console.log(response.data);
-      alert(response.data.message);
+      setRefresh(prev => prev + 1);
       onClose();
     } catch (error) {
       setError('Failed to submit complaint. Please try again.');

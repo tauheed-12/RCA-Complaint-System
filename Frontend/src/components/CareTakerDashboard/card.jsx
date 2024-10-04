@@ -5,7 +5,7 @@ import { Card } from "flowbite-react";
 import { Link } from 'react-router-dom';
 export function CardComponent({ complaints }) {
   console.log(complaints);
-  const { token } = useAuth();
+  const { token, setRefresh } = useAuth();
   const handleUpdate = async (complaintId, status) => {
     if (status === 'Resolved') {
       return;
@@ -17,8 +17,9 @@ export function CardComponent({ complaints }) {
         }
       });
       console.log(response.data);
+      setRefresh(prev => prev + 1);
     } catch (error) {
-
+      console.log("Error occurred during updating status", error);
     }
   }
   return (
@@ -26,19 +27,19 @@ export function CardComponent({ complaints }) {
       {complaints.map((complaint) => (
         <Card
           key={complaint._id}
-          href="#"
           class="mx-2 my-4 w-full rounded-md bg-jmi-grey !important text-black"
         >
           <div className="flex justify-between gap-2">
             <h5 className="text-xl font-bold tracking-tight">
               {complaint.title}
             </h5>
-            <button
-              className="bg-green-300 text-white px-6 py-1 text-xl 
-               font-bold hover:bg-green-800 hover:text-white"
-              onClick={() => handleUpdate(complaint._id, complaint.status)}>
-              UPDATE
-            </button>
+            {complaint.status !== 'Resolved' && (
+              <button
+                className="bg-green-300 text-white px-6 py-1 text-xl font-bold hover:bg-green-800 hover:text-white"
+                onClick={() => handleUpdate(complaint._id, complaint.status)}>
+                UPDATE
+              </button>
+            )}
             {complaint.images.map((img, id) => (
               <Link className='text-blue font-bold underline' to={img}>IMAGE {id + 1}</Link>
             ))}
