@@ -11,6 +11,9 @@ import CareTakerProtectedRoutes from "./pages/CareTakerProtectedRoutes";
 import StudentProtectedRoutes from "./pages/StudentProtectedRoutes";
 import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
+import ListOfCaretakers from "./components/AdminDashboard/ListOfCaretakers";
+import VerifyCaretakers from "./components/AdminDashboard/VerifyCaretakers";
+import ComplaintVerification from "./components/AdminDashboard/ComplaintVerification";
 
 
 const router = createBrowserRouter([
@@ -25,7 +28,11 @@ const router = createBrowserRouter([
             {
                 element: <AdminProtectedRoutes />,
                 children: [
-                    { path: '/admin/dashboard', element: <AdminDashboard /> }
+                    { path: '/admin/dashboard', element: <AdminDashboard /> },
+                    // add path of all component of admin dashboard here
+                    {path: '/admin/dashboard/caretakers', element: <ListOfCaretakers/>},
+                    {path: '/admin/dashboard/verifycaretakers', element: <VerifyCaretakers/>},
+                    {path: '/admin/dashboard/complaint', element: <ComplaintVerification/>}
                 ]
             },
             {
