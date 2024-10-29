@@ -1,88 +1,121 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 
 function ComplaintVerification() {
-    // List of mock complaints
-    const complaints = [
-        { id: 1, name: "Ayesha Siddiqui", complaint: "No hot water in Block A bathrooms", status: "Pending" },
-        { id: 2, name: "Fatima Khan", complaint: "Leaking roof in Block B", status: "Under Review" },
-        { id: 3, name: "Ali Raza", complaint: "AC not working in Block C", status: "Resolved" },
-        { id: 4, name: "Zainab Ali", complaint: "Broken window in Block D", status: "Pending" },
-        { id: 5, name: "Hamza Malik", complaint: "Power outage in Block E during night", status: "Under Review" },
-        { id: 6, name: "Sara Ahmed", complaint: "Unclean washrooms in Block F", status: "Pending" }
-    ];
+    const { token, userId } = useAuth();
+    const [complaints, setComplaints] = useState([
+        { id: 1, name: "Ayesha Siddiqui", complaint: "No hot water in Hostel A bathrooms", status: "Pending", lastUpdate: "2024-10-14", hostel: "Hostel A", date: "2024-10-12" },
+        { id: 2, name: "Fatima Khan", complaint: "Leaking roof in Hostel B", status: "Under Review", lastUpdate: "2024-10-13", hostel: "Hostel B", date: "2024-10-10" },
+        { id: 3, name: "Ali Raza", complaint: "AC not working in Hostel C", status: "Resolved", lastUpdate: "2024-10-15", hostel: "Hostel C", date: "2024-10-09" }
+    ]);
+
+    const [refresh, setRefresh] = useState(0);
+
+    useEffect(() => {
+        const fetchComplaint = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/admin/getAllComplaints', {
+                    params: { userId },
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                console.log(response.data);
+                setComplaints(response.data);
+            } catch (error) {
+                console.log("Error fetching complaints in admin dashboard", error);
+            }
+        };
+        fetchComplaint();
+    }, [userId, token, refresh]);
+
+    const handleStatusUpdate = async (id) => {
+        const complaintToUpdate = complaints.find(complaint => complaint.id === id);
+        let newStatus;
+
+        switch (complaintToUpdate.status) {
+            case 'Pending':
+                newStatus = 'Under Review';
+                break;
+            case 'Under Review':
+                newStatus = 'Resolved';
+                break;
+            case 'Resolved':
+                return;
+            default:
+                newStatus = 'Pending';
+        }
+
+        try {
+            const response = await axios.post('http://localhost:8080/careTaker/updateStatus', { complaintId: id, status: newStatus }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setComplaints(complaints.map(c => c.id === id ? { ...c, status: newStatus, lastUpdate: new Date().toISOString().slice(0, 10) } : c));
+            console.log(response.data);
+        } catch (error) {
+            console.log("Error updating complaint status", error);
+        }
+    };
+
+    const deleteComplaint = async (complaintId) => {
+        console.log(complaintId);
+        try {
+            const response = await axios.get('http://localhost:8080/student/deleteComplaint', {
+                params: { complaintId },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setComplaints(complaints.filter(complaint => complaint._id !== complaintId));
+            console.log(response.data);
+        } catch (error) {
+            console.log("Error deleting the complaint", error);
+        }
+    };
 
     return (
-        <>
-            <div style={styles.section}>
-                <h2 style={styles.heading}>Complaint Verification</h2>
-                {complaints.map(complaint => (
-                    <div key={complaint.id} style={styles.complaintCard}>
-                        <h3 style={styles.complaintName}>{complaint.name}</h3>
-                        <p style={styles.text}><strong>Complaint:</strong> {complaint.complaint}</p>
-                        <p style={styles.text}><strong>Status:</strong> {complaint.status}</p>
-                        
-                        <div style={styles.verifySection}>
-                            <input type="checkbox" id={`verify-${complaint.id}`} style={styles.checkbox}/>
-                            <label htmlFor={`verify-${complaint.id}`} style={styles.verifyLabel}>Verify</label>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </>
+        <div className="p-8 bg-gray-100 min-h-screen">
+            <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Complaint Verification</h2>
+
+            <table className="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr className="bg-gray-200 text-left">
+                        <th className="py-3 px-4 border-b">Name</th>
+                        <th className="py-3 px-4 border-b">Complaint</th>
+                        <th className="py-3 px-4 border-b">Hostel Name</th>
+                        <th className="py-3 px-4 border-b">Date of Complaint</th>
+                        <th className="py-3 px-4 border-b">Last Status Update</th>
+                        <th className="py-3 px-4 border-b">Status</th>
+                        <th className="py-3 px-4 border-b">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {complaints.map(complaint => (
+                        <tr key={complaint.id} className="hover:bg-gray-100">
+                            <td className="py-3 px-4 border-b">{complaint.title}</td>
+                            <td className="py-3 px-4 border-b">{complaint.description}</td>
+                            <td className="py-3 px-4 border-b">{complaint.hostel}</td>
+                            <td className="py-3 px-4 border-b">{complaint.createdAt}</td>
+                            <td className="py-3 px-4 border-b">{complaint.lastUpdate}</td>
+                            <td className="py-3 px-4 border-b">{complaint.status}</td>
+                            <td className="py-3 px-4 border-b">
+                                <button
+                                    onClick={() => handleStatusUpdate(complaint.id)}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+                                >
+                                    Update
+                                </button>
+                                <button
+                                    onClick={() => deleteComplaint(complaint._id)}
+                                    className="ml-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 }
-
-const styles = {
-    section: {
-        backgroundColor: '#E8E9ED', // jmi-grey background
-        padding: '30px',
-        marginBottom: '20px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-        textAlign: 'center',
-    },
-    heading: {
-        backgroundColor: '#45A967', // jmi-green background
-        color: '#fff', // White text
-        padding: '10px',
-        fontSize: '1.8rem',
-        marginBottom: '15px',
-        borderRadius: '8px',
-        fontFamily: 'Roboto, Arial, sans-serif',
-    },
-    complaintCard: {
-        backgroundColor: '#45A967', // jmi-green background for each complaint card
-        color: '#fff', // White text
-        padding: '15px',
-        marginBottom: '15px',
-        borderRadius: '8px',
-        textAlign: 'left', // Align complaint details to the left
-        position: 'relative', // For absolute positioning of checkbox and button
-    },
-    complaintName: {
-        fontSize: '1.4rem',
-        marginBottom: '8px',
-    },
-    text: {
-        fontSize: '1rem',
-        margin: '5px 0',
-        fontFamily: 'Roboto, Arial, sans-serif',
-    },
-    verifySection: {
-        position: 'absolute',
-        top: '15px',
-        right: '15px',
-        display: 'flex',
-        alignItems: 'center',
-    },
-    checkbox: {
-        marginRight: '5px',
-        cursor: 'pointer',
-    },
-    verifyLabel: {
-        color: '#fff',
-        cursor: 'pointer',
-    }
-};
 
 export default ComplaintVerification;

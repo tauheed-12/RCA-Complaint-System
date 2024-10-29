@@ -29,11 +29,10 @@ const router = createBrowserRouter([
             {
                 element: <AdminProtectedRoutes />,
                 children: [
-                    { path: '/admin/dashboard', element: <AdminDashboard /> },
-                    // add path of all component of admin dashboard here
-                    {path: '/admin/dashboard/caretakers', element: <ListOfCaretakers/>},
-                    {path: '/admin/dashboard/verifycaretakers', element: <VerifyCaretakers/>},
-                    {path: '/admin/dashboard/complaint', element: <ComplaintVerification/>}
+                    { path: '/admin/:id', element: <AdminDashboard /> },
+                    { path: '/admin/dashboard/caretakers', element: <ListOfCaretakers /> },
+                    { path: '/admin/dashboard/verifycaretakers', element: <VerifyCaretakers /> },
+                    { path: '/admin/dashboard/complaint', element: <ComplaintVerification /> }
                 ]
             },
             {

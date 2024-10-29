@@ -48,7 +48,7 @@ const Login = () => {
 
         if (response.data.isCareTaker) {
           navigate(`/caretaker/${response.data.userId}`);
-        } else if (response.data.isAdmin === 'true') {
+        } else if (response.data.isAdmin) {
           navigate(`/admin/${response.data.userId}`);
         } else {
           navigate(`/student/${response.data.userId}`);

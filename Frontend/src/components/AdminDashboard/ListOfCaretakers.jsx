@@ -1,56 +1,167 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 function ListOfCaretakers() {
-    // Updated list of caretakers with Muslim names and contact information
-    const caretakers = [
-        { id: 1, name: "Ayesha Siddiqui", details: "Caretaker for Block A", contact: "ayesha.s@example.com" },
-        { id: 2, name: "Fatima Khan", details: "Caretaker for Block B", contact: "fatima.k@example.com" },
-        { id: 3, name: "Ali Raza", details: "Caretaker for Block C", contact: "ali.raza@example.com" },
-        { id: 4, name: "Zainab Ali", details: "Caretaker for Block D", contact: "zainab.ali@example.com" },
-        { id: 5, name: "Hamza Malik", details: "Caretaker for Block E", contact: "hamza.malik@example.com" },
-        { id: 6, name: "Sara Ahmed", details: "Caretaker for Block F", contact: "sara.ahmed@example.com" }
-    ];
+    const { token } = useAuth();
+    const [caretakers, setCaretakers] = useState([]);
+    const [newCaretaker, setNewCaretaker] = useState({ name: '', hostel: 'Hostel A', contact: '', password: '' });
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const getCareTakerData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/admin/getAllUsers', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setCaretakers(response.data);
+            } catch (error) {
+                console.error("Error fetching caretakers", error);
+                setError('Failed to fetch caretakers');
+            }
+        };
+        getCareTakerData();
+    }, [token]);
+
+    const deleteCaretaker = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this caretaker?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await axios.get('http://localhost:8080/admin/deleteUser', {
+                data: { id },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setCaretakers(caretakers.filter(caretaker => caretaker._id !== id));
+            console.log(response.data);
+        } catch (error) {
+            console.log("Error during deleting caretaker", error);
+            setError("Error deleting caretaker");
+        }
+    };
+
+    const addCaretaker = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        try {
+            const response = await axios.post('http://localhost:8080/admin/addCareTaker', newCaretaker, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setCaretakers([...caretakers, response.data]);
+            setNewCaretaker({ name: '', hostel: 'Hostel A', contact: '', password: '' });
+        } catch (error) {
+            if (error.response) {
+                const { status, data } = error.response;
+
+                if (status === 400 || status === 409) {
+                    setError(data.message);
+                } else {
+                    setError('Server error. Please try again later.');
+                }
+            } else {
+                setError('Network error. Please check your connection.');
+            }
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewCaretaker({ ...newCaretaker, [name]: value });
+    };
 
     return (
-        <>
-            {caretakers.map(caretaker => (
-                <div key={caretaker.id} style={styles.section}>
-                    <h2 style={styles.heading}>{caretaker.name}</h2>
-                    <p style={styles.text}><strong>Block:</strong> {caretaker.details}</p>
-                    <p style={styles.text}><strong>Contact:</strong> {caretaker.contact}</p>
-                </div>
-            ))}
-        </>
+        <div className="px-28 py-12">
+            <h1 className="text-2xl font-bold mb-6">List of Caretakers</h1>
+            {error && <div className="text-red-500 mb-4">{error}</div>}
+
+            <table className="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr className="bg-gray-200 text-left">
+                        <th className="py-2 px-4 border-b">Name</th>
+                        <th className="py-2 px-4 border-b">Hostel Name</th>
+                        <th className="py-2 px-4 border-b">Contact</th>
+                        <th className="py-2 px-4 border-b">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {caretakers.map(caretaker => (
+                        <tr key={caretaker._id}>
+                            <td className="py-2 px-4 border-b">{caretaker.name}</td>
+                            <td className="py-2 px-4 border-b">{caretaker.hostel}</td>
+                            <td className="py-2 px-4 border-b">{caretaker.contact}</td>
+                            <td className="py-2 px-4 border-b">
+                                <button
+                                    className="bg-red-500 text-white px-4 py-1 rounded"
+                                    onClick={() => deleteCaretaker(caretaker._id)}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2 className="text-xl font-bold mt-8 mb-4">Add New Caretaker</h2>
+            <form onSubmit={addCaretaker} className="flex flex-col gap-4">
+                <input
+                    className="p-2 border border-gray-300 rounded"
+                    type="text"
+                    name="name"
+                    placeholder="Caretaker Name"
+                    value={newCaretaker.name}
+                    onChange={handleInputChange}
+                    required
+                />
+                <select
+                    className="p-2 border border-gray-300 rounded"
+                    name="hostel"
+                    value={newCaretaker.hostel}
+                    onChange={handleInputChange}
+                    required
+                >
+                    <option value="Hostel A">Hostel A</option>
+                    <option value="Hostel B">Hostel B</option>
+                    <option value="Hostel C">Hostel C</option>
+                </select>
+
+                <input
+                    className="p-2 border border-gray-300 rounded"
+                    type="email"
+                    name="contact"
+                    placeholder="Contact Email"
+                    value={newCaretaker.contact}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <input
+                    className="p-2 border border-gray-300 rounded"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={newCaretaker.password}
+                    onChange={handleInputChange}
+                    required
+                />
+
+                <button
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                    type="submit"
+                >
+                    Add Caretaker
+                </button>
+            </form>
+        </div>
     );
 }
-
-const styles = {
-    section: {
-        backgroundColor: '#E8E9ED', // jmi-grey for the section background
-        padding: '30px',
-        marginBottom: '20px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.2)', 
-        textAlign: 'center',
-    },
-    heading: {
-        backgroundColor: '#45A967', // jmi-green for the text background
-        color: '#fff', // White text color
-        padding: '10px',
-        fontSize: '1.8rem',
-        marginBottom: '15px',
-        borderRadius: '8px',
-        fontFamily: 'Roboto, Arial, sans-serif'
-    },
-    text: {
-        backgroundColor: '#45A967', // jmi-green for the text background
-        color: '#fff', // White text color
-        padding: '10px',
-        fontSize: '1rem',
-        borderRadius: '8px',
-        margin: '10px 0',
-        fontFamily: 'Roboto, Arial, sans-serif'
-    }
-};
 
 export default ListOfCaretakers;

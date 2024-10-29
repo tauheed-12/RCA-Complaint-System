@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 export function CardComponent({ complaints }) {
   console.log(complaints);
   const { token, setRefresh } = useAuth();
+
   const handleUpdate = async (complaintId, status) => {
     if (status === 'Resolved') {
       return;
@@ -22,6 +23,7 @@ export function CardComponent({ complaints }) {
       console.log("Error occurred during updating status", error);
     }
   }
+
   return (
     <div className="flex flex-wrap w-full">
       {complaints.map((complaint) => (
