@@ -30,11 +30,7 @@ exports.getComplaints = async (req, res) => {
 exports.updateStatus = async (req, res) => {
     try {
         let { complaintId, status } = req.body;
-        if (status === "Pending") {
-            status = "In Progress";
-        } else if (status === "In Progress") {
-            status = "Resolved"
-        }
+        console.log(complaintId, status);
         const complaint = await Complaint.findByIdAndUpdate(
             complaintId,
             { status: status },

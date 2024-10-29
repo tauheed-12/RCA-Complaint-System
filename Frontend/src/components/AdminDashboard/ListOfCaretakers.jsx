@@ -5,17 +5,18 @@ import { useAuth } from '../../context/AuthContext';
 function ListOfCaretakers() {
     const { token } = useAuth();
     const [caretakers, setCaretakers] = useState([]);
-    const [newCaretaker, setNewCaretaker] = useState({ name: '', hostel: 'Hostel A', contact: '', password: '' });
+    const [newCaretaker, setNewCaretaker] = useState({ name: '', hostel: 'HostelA', contact: '', password: '' });
     const [error, setError] = useState('');
 
     useEffect(() => {
         const getCareTakerData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/admin/getAllUsers', {
+                const response = await axios.get('http://localhost:8080/admin/getUsers', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
+                console.log(response.data);
                 setCaretakers(response.data);
             } catch (error) {
                 console.error("Error fetching caretakers", error);
@@ -31,7 +32,7 @@ function ListOfCaretakers() {
 
         try {
             const response = await axios.get('http://localhost:8080/admin/deleteUser', {
-                data: { id },
+                params: { id },
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -56,7 +57,7 @@ function ListOfCaretakers() {
             });
 
             setCaretakers([...caretakers, response.data]);
-            setNewCaretaker({ name: '', hostel: 'Hostel A', contact: '', password: '' });
+            setNewCaretaker({ name: '', hostel: 'HostelA', contact: '', password: '' });
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
@@ -96,7 +97,7 @@ function ListOfCaretakers() {
                         <tr key={caretaker._id}>
                             <td className="py-2 px-4 border-b">{caretaker.name}</td>
                             <td className="py-2 px-4 border-b">{caretaker.hostel}</td>
-                            <td className="py-2 px-4 border-b">{caretaker.contact}</td>
+                            <td className="py-2 px-4 border-b">{caretaker.email}</td>
                             <td className="py-2 px-4 border-b">
                                 <button
                                     className="bg-red-500 text-white px-4 py-1 rounded"
@@ -128,9 +129,9 @@ function ListOfCaretakers() {
                     onChange={handleInputChange}
                     required
                 >
-                    <option value="Hostel A">Hostel A</option>
-                    <option value="Hostel B">Hostel B</option>
-                    <option value="Hostel C">Hostel C</option>
+                    <option value="HostelA">HostelA</option>
+                    <option value="HostelB">HostelB</option>
+                    <option value="HostelC">HostelC</option>
                 </select>
 
                 <input

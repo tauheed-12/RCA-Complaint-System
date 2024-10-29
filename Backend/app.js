@@ -15,7 +15,7 @@ app.use(express.json());
 
 connect();
 
-app.use('/admin',adminRoutes);
+app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 app.use('/student', studentRoutes);
 app.use('/caretaker', caretakerRoutes)

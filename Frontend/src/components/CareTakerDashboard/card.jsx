@@ -8,11 +8,16 @@ export function CardComponent({ complaints }) {
   const { token, setRefresh } = useAuth();
 
   const handleUpdate = async (complaintId, status) => {
-    if (status === 'Resolved') {
+    let newStatus;
+    if (status === "Pending") {
+      newStatus = "In Progress"
+    } else if (status === "In Progress") {
+      newStatus = "Resolved"
+    } else if (status === 'Resolved') {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/careTaker/updateStatus', { complaintId, status }, {
+      const response = await axios.post('http://localhost:8080/caretaker/updateStatus', { complaintId, status: newStatus }, {
         headers: {
           Authorization: `Bearer ${token}`
         }

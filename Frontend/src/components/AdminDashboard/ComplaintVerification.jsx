@@ -29,14 +29,14 @@ function ComplaintVerification() {
     }, [userId, token, refresh]);
 
     const handleStatusUpdate = async (id) => {
-        const complaintToUpdate = complaints.find(complaint => complaint.id === id);
+        const complaintToUpdate = complaints.find(complaint => complaint._id === id);
         let newStatus;
 
         switch (complaintToUpdate.status) {
             case 'Pending':
-                newStatus = 'Under Review';
+                newStatus = 'In Progress';
                 break;
-            case 'Under Review':
+            case 'In Progress':
                 newStatus = 'Resolved';
                 break;
             case 'Resolved':
@@ -46,11 +46,11 @@ function ComplaintVerification() {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/careTaker/updateStatus', { complaintId: id, status: newStatus }, {
+            const response = await axios.post('http://localhost:8080/caretaker/updateStatus', { complaintId: id, status: newStatus }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setComplaints(complaints.map(c => c.id === id ? { ...c, status: newStatus, lastUpdate: new Date().toISOString().slice(0, 10) } : c));
+            setComplaints(complaints.map(c => c._id === id ? { ...c, status: newStatus, lastUpdate: new Date().toISOString().slice(0, 10) } : c));
             console.log(response.data);
         } catch (error) {
             console.log("Error updating complaint status", error);
@@ -98,7 +98,7 @@ function ComplaintVerification() {
                             <td className="py-3 px-4 border-b">{complaint.status}</td>
                             <td className="py-3 px-4 border-b">
                                 <button
-                                    onClick={() => handleStatusUpdate(complaint.id)}
+                                    onClick={() => handleStatusUpdate(complaint._id)}
                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
                                 >
                                     Update

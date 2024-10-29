@@ -15,17 +15,21 @@ exports.getAllUsers = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.query;
+        console.log(id);
+
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
-        await user.remove();
+
+        await User.findByIdAndDelete(id);
         res.json({ msg: 'User removed' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 };
+
 
 exports.getAllComplaint = async (req, res) => {
     try {
@@ -62,7 +66,9 @@ exports.addCareTaker = async (req, res) => {
             hostel,
             email: contact,
             password: hashedPassword,
-            isCareTaker: true
+            isCareTaker: true,
+            isVerified: true,
+            role: "Caretaker",
         });
 
         const savedUser = await newUser.save();
